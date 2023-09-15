@@ -1,0 +1,17 @@
+---
+- name: Clone Git Repository
+  hosts: prod
+  become: yes
+  tasks:
+
+    - name: Clone the Git repository
+      git:
+        repo: https://github.com/ReyMedvedev/my-todo.git
+        dest: /home/ubuntu/prod
+
+    - name: Deploy
+      become: yes
+      shell: |
+        cd /home/ubuntu/prod
+        mv .env_EXAMPLE .env
+        docker compose up -d
