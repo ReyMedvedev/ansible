@@ -1,0 +1,5 @@
+[db]
+52.57.229.253 ansible_ssh_private_key_file=~/git/ansible-roles-team-medvedev/terraform/keys/ansible-db ansible_user=ubuntu
+
+[server]
+3.79.103.169 ansible_ssh_private_key_file=~/git/ansible-roles-team-medvedev/terraform/keys/ansible-app ansible_user=ubuntu

@@ -1,0 +1,5 @@
+---
+# vars file for db
+db_user: app_user
+db_pass: app_pass
+db_name: app_db

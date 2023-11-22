@@ -1,0 +1,11 @@
+/terraform/keys/ansible-app
+/terraform/keys/ansible-app.pub
+/terraform/keys/ansible-db
+/terraform/keys/ansible-db.pub
+/terraform/.terraform/
+/terraform/.terraform.lock.hcl
+/terraform/terraform.tfstate
+/terraform/terraform.tfstate.backup
+/roles/server/tests/
+/roles/db/tests/
+/.idea/

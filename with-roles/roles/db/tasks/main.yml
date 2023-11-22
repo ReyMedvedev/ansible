@@ -1,0 +1,65 @@
+---
+# tasks file for db
+- name: Install PostgreSQL and Python packages
+  become: yes
+  ansible.builtin.apt:
+    name:
+      - postgresql
+      - postgresql-contrib
+      - python3-psycopg2
+      - acl
+    update_cache: yes
+
+- name: Ensure the PostgreSQL service is running
+  become: yes
+  service: name=postgresql state=started enabled=yes
+
+- name: Get PostgreSQL version
+  shell: psql --version | cut -d" " -f3 | cut -d. -f1
+  register: postgresql_version
+  changed_when: false
+
+- name: Add lines to the end of the file (just for AWS)
+  become: yes
+  lineinfile:
+    path: /etc/postgresql/{{ postgresql_version.stdout }}/main/pg_hba.conf
+    line: "host  all  all 0.0.0.0/0 md5"
+    insertafter: EOF
+  when: not ansible_check_mode
+
+- name: Add lines to the end of the file (just for AWS)
+  become: yes
+  lineinfile:
+    path: /etc/postgresql/{{ postgresql_version.stdout }}/main/postgresql.conf
+    line: "listen_addresses = '*'"
+    insertafter: EOF
+  when: not ansible_check_mode
+
+- name: Create the database specified in vars
+  become: true
+  become_user: postgres
+  postgresql_db: name={{ db_name }}
+         template='template0'
+         state=present
+
+- name: Create db user
+  postgresql_user:
+    state: present
+    name: "{{ db_user }}"
+    password: "{{ db_pass }}"
+  become: yes
+  become_user: postgres
+
+- name: Grant db user access to app db
+  postgresql_privs:
+    type: database
+    database: "{{ db_name }}"
+    roles: "{{ db_user }}"
+    grant_option: no
+    privs: all
+  become: yes
+  become_user: postgres
+
+- name: restart postgres
+  become: yes
+  service: name=postgresql state=restarted

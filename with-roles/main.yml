@@ -1,0 +1,10 @@
+---
+- name: Deploy DB role
+  hosts: db
+  roles:
+    - db
+
+- name: Deploy Server role
+  hosts: server
+  roles:
+    - server
